@@ -1,0 +1,20 @@
+{
+  "name": "EncodeMe",
+  "version": "1.0.1",
+  "description": "Encoder library with builtin debouncer",
+  "keywords": "encoder, rotary encoder, quadrature, debounce, input handling, input combination, embedded systems, Arduino, ESP32, STM32",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tomasz90/encode-me"
+  },
+  "authors": [
+    {
+      "name": "Tomasz Kulig",
+      "email": "tomaszkacperkulig@gmail.com",
+      "url": "https://github.com/tomasz90"
+    }
+  ],
+  "license": "MIT",
+  "frameworks": "*",
+  "platforms": "*"
+}
