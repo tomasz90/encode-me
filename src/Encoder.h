@@ -45,7 +45,7 @@ struct Encoder {
     Pin pinB;
     Pin *pinCommon = nullptr;
 
-    volatile int position = 0;
+    volatile long position = 0;
     int accumulated = 0;
 
     std::function<void()> onClockwise = nullptr;

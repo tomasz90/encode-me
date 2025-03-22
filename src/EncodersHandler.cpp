@@ -2,6 +2,24 @@
 
 EncodersHandler::EncodersHandler(std::initializer_list<Encoder *> encoders) : encoders(encoders) {}
 
+// this function can be used to poll inside `setup()`
+#if IS_FREE_RTOS_SUPPORTED
+void EncodersHandler::pollOnce(int pollInterval) {
+    auto task = [](TimerHandle_t xTimer) {
+        auto _this = static_cast<EncodersHandler *>(pvTimerGetTimerID(xTimer));
+        _this->poll();
+    };
+    timer = xTimerCreate(NULL, pdMS_TO_TICKS(pollInterval), true, this, task);
+    xTimerStart(timer, 0);
+}
+
+void EncodersHandler::stopPolling() {
+    if (timer == nullptr) return;
+    xTimerStop(timer, 0);
+    xTimerDelete(timer, 0);
+}
+#endif
+
 void EncodersHandler::poll() {
     initializeEncodersPins();
     for (auto &encoder: encoders) pollEncoderState(encoder);
