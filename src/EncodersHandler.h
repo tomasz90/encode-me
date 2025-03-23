@@ -4,6 +4,12 @@
 #include "Encoder.h"
 #include <vector>
 
+#if defined(USE_LEGACY)
+#define LEGACY 1
+#else
+#define LEGACY 0
+#endif
+
 #if defined(ESP32) || defined(NRF52840_XXAA) || defined(USE_POLL_ONCE)
 #define IS_FREE_RTOS_SUPPORTED 1
 #else
@@ -20,7 +26,11 @@ constexpr static int8_t decoder[4][4] = {
 
 class EncodersHandler {
 public:
+#if !LEGACY
     EncodersHandler(std::initializer_list<Encoder *> encoders);
+#else
+    EncodersHandler(Encoder **encoders, uint8_t numEncoders);
+#endif
     void poll();
 
 #if IS_FREE_RTOS_SUPPORTED
@@ -31,14 +41,18 @@ public:
     void setDebounceTime(unsigned long debounceTimeUs);
 
 private:
-    unsigned long debounceTimeUs = 1000;
+#if !LEGACY
     std::vector<Encoder *> encoders;
+#else
+    static const uint8_t MAX_ENCODERS = 10;
+    Encoder *encoders[MAX_ENCODERS]; // Fixed-size array
+    uint8_t numEncoders;
+#endif
+    unsigned long debounceTimeUs = 1000;
 
 #if IS_FREE_RTOS_SUPPORTED
     TimerHandle_t timer;
 #endif
-
-    void initializeEncodersPins();
     void pollEncoderState(Encoder *encoder) const;
     void pollPinState(Pin *pin) const;
     void processEncoderState(Encoder *encoder) const;
