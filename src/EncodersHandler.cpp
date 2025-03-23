@@ -13,7 +13,7 @@ void EncodersHandler::pollOnce(int pollInterval) {
     xTimerStart(timer, 0);
 }
 
-void EncodersHandler::stopPolling() {
+void EncodersHandler::pollStop() {
     if (timer == nullptr) return;
     xTimerStop(timer, 0);
     xTimerDelete(timer, 0);

@@ -12,10 +12,10 @@
 
 // Quadrature decoding table (4x4 state machine)
 constexpr static int8_t decoder[4][4] = {
-        {  0, +1, -1,  0 },   // Previous 00
-        { -1,  0,  0, +1 },   // Previous 01
-        { +1,  0,  0, -1 },   // Previous 10
-        {  0, -1, +1,  0 }    // Previous 11
+        {  0, +1, -1,  0 },
+        { -1,  0,  0, +1 },
+        { +1,  0,  0, -1 },
+        {  0, -1, +1,  0 }
 };
 
 class EncodersHandler {
@@ -25,7 +25,7 @@ public:
 
 #if IS_FREE_RTOS_SUPPORTED
     void pollOnce(int pollInterval = 1);
-    void stopPolling();
+    void pollStop();
 #endif
 
     void setDebounceTime(unsigned long debounceTimeUs);
