@@ -2,12 +2,12 @@
 #define ENCODERHANDLER_H
 
 #include "Encoder.h"
-#include <vector>
 
 #if defined(USE_LEGACY)
 #define LEGACY 1
 #else
 #define LEGACY 0
+#include <vector>
 #endif
 
 #if defined(ESP32) || defined(NRF52840_XXAA) || defined(USE_POLL_ONCE)

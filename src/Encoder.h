@@ -2,14 +2,24 @@
 #define ENCODER_H
 
 #include <Arduino.h>
+
+#if defined(USE_LEGACY)
+#define LEGACY 1
+#else
+#define LEGACY 0
 #include <functional>
+#endif
 
 #define RELEASED 0
 #define PRESSED 1
 
 enum Mode {
     IN_PULLUP = INPUT_PULLUP,
+#ifdef INPUT_PULLDOWN
     IN_PULLDOWN = INPUT_PULLDOWN,
+#else
+    IN_PULLDOWN = INPUT,
+#endif
     OUT = OUTPUT,
 };
 
@@ -49,11 +59,17 @@ struct Encoder {
     volatile long position = 0;
     int accumulated = 0;
 
+#if !LEGACY
     std::function<void()> onClockwise = nullptr;
     std::function<void()> onCounterClockwise = nullptr;
-
     void setOnClockwise(std::function<void()> behavior);
     void setOnCounterClockwise(std::function<void()> behavior);
+#else
+    void (*onClockwise)() = nullptr;
+    void (*onCounterClockwise)() = nullptr;
+    void setOnClockwise(void (*behavior)());
+    void setOnCounterClockwise(void (*behavior)());
+#endif
 
 private:
     void initialize();

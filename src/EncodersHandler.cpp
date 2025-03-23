@@ -1,12 +1,28 @@
 #include "EncodersHandler.h"
 
+#if !LEGACY
+EncodersHandler::EncodersHandler(std::initializer_list<Encoder *> encoders) : encoders(encoders) {}
+
+void EncodersHandler::poll() {
+    for (auto &encoder: encoders) pollEncoderState(encoder);
+    for (auto &encoder: encoders) processEncoderState(encoder);
+    for (auto &encoder: encoders) resetState(encoder);
+}
+#else
 EncodersHandler::EncodersHandler(Encoder **encoders, uint8_t numEncoders) {
     this->numEncoders = min(numEncoders, MAX_ENCODERS);
     for (uint8_t i = 0; i < this->numEncoders; i++) {
         this->encoders[i] = encoders[i];
     }
 }
+void EncodersHandler::poll() {
+    for (uint8_t i = 0; i < numEncoders; i++) { pollEncoderState(encoders[i]); }
+    for (uint8_t i = 0; i < numEncoders; i++) { processEncoderState(encoders[i]); }
+    for (uint8_t i = 0; i < numEncoders; i++) { resetState(encoders[i]); }
+}
+#endif
 
+#if IS_FREE_RTOS_SUPPORTED
 void EncodersHandler::pollOnce(int pollInterval) {
     auto task = [](TimerHandle_t xTimer) {
         auto _this = static_cast<EncodersHandler *>(pvTimerGetTimerID(xTimer));
@@ -20,19 +36,6 @@ void EncodersHandler::pollStop() {
     if (timer == nullptr) return;
     xTimerStop(timer, 0);
     xTimerDelete(timer, 0);
-}
-
-#if !LEGACY
-void EncodersHandler::poll() {
-    for (auto &encoder: encoders) pollEncoderState(encoder);
-    for (auto &encoder: encoders) processEncoderState(encoder);
-    for (auto &encoder: encoders) resetState(encoder);
-}
-#else
-void EncodersHandler::poll() {
-    for (uint8_t i = 0; i < numEncoders; i++) { pollEncoderState(encoders[i]); }
-    for (uint8_t i = 0; i < numEncoders; i++) { processEncoderState(encoders[i]); }
-    for (uint8_t i = 0; i < numEncoders; i++) { resetState(encoders[i]); }
 }
 #endif
 

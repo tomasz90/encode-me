@@ -44,6 +44,7 @@ void Encoder::initialize() {
     if (pinCommon) pinCommon->initialize();
 }
 
+#if !LEGACY
 void Encoder::setOnClockwise(std::function<void()> behavior) {
     initialize();
     this->onClockwise = std::move(behavior);
@@ -53,3 +54,13 @@ void Encoder::setOnCounterClockwise(std::function<void()> behavior) {
     initialize();
     this->onCounterClockwise = std::move(behavior);
 }
+#else
+void Encoder::setOnClockwise(void (*behavior)()) {
+    initialize();
+    this->onClockwise = behavior;
+}
+void Encoder::setOnCounterClockwise(void (*behavior)()) {
+    initialize();
+    this->onCounterClockwise = behavior;
+}
+#endif
