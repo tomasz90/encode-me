@@ -1,7 +1,6 @@
 #include "Encoder.h"
 
 Pin::Pin(byte id, Mode mode) : id(id), mode(mode) {
-    pinMode(id, mode);
     invertedState = mode == IN_PULLUP;
     state.lastRawState = RELEASED;
     state.currentState = RELEASED;
@@ -13,7 +12,9 @@ Pin::Pin(byte id, byte lowOrHigh) : id(id), mode(OUT) {
     state.currentState = lowOrHigh;
 }
 
-void Pin::initialize() const {
+void Pin::initialize() {
+    if (initialized) return;
+    initialized = true;
     pinMode(id, mode);
     if (mode == OUT) {
         digitalWrite(id, state.currentState);
@@ -37,10 +38,18 @@ Encoder::Encoder(byte pinA, byte pinB, byte pinCommon, Mode encoderMode)
     this->pinCommon = new Pin(pinCommon, lowOrHigh);
 }
 
+void Encoder::initialize() {
+    pinA.initialize();
+    pinB.initialize();
+    if (pinCommon) pinCommon->initialize();
+}
+
 void Encoder::setOnClockwise(std::function<void()> behavior) {
+    initialize();
     this->onClockwise = std::move(behavior);
 }
 
 void Encoder::setOnCounterClockwise(std::function<void()> behavior) {
+    initialize();
     this->onCounterClockwise = std::move(behavior);
 }

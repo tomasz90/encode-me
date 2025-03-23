@@ -21,7 +21,6 @@ void EncodersHandler::stopPolling() {
 #endif
 
 void EncodersHandler::poll() {
-    initializeEncodersPins();
     for (auto &encoder: encoders) pollEncoderState(encoder);
     for (auto &encoder: encoders) processEncoderState(encoder);
     for (auto &encoder: encoders) resetState(encoder);
@@ -29,16 +28,6 @@ void EncodersHandler::poll() {
 
 void EncodersHandler::setDebounceTime(unsigned long debounceTimeUs) {
     this->debounceTimeUs = debounceTimeUs;
-}
-
-void EncodersHandler::initializeEncodersPins() {
-    if (initializedEncoders) return;
-    for (auto &encoder: encoders) {
-        encoder->pinA.initialize();
-        encoder->pinB.initialize();
-        if (encoder->pinCommon) encoder->pinCommon->initialize();
-    }
-    initializedEncoders = true;
 }
 
 void EncodersHandler::pollEncoderState(Encoder *encoder) const {

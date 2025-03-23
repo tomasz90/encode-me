@@ -20,6 +20,7 @@ struct Pin {
     byte id;
     Mode mode;
     bool invertedState;
+    bool initialized = false;
 
     struct {
         bool lastRawState;
@@ -28,7 +29,7 @@ struct Pin {
         unsigned long lastChangeTime;
     } state;
 
-    void initialize() const;
+    void initialize();
 };
 
 struct Encoder {
@@ -53,6 +54,9 @@ struct Encoder {
 
     void setOnClockwise(std::function<void()> behavior);
     void setOnCounterClockwise(std::function<void()> behavior);
+
+private:
+    void initialize();
 };
 
 #endif //ENCODER_H

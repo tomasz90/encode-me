@@ -33,7 +33,6 @@ public:
 private:
     unsigned long debounceTimeUs = 1000;
     std::vector<Encoder *> encoders;
-    bool initializedEncoders = false;
 
 #if IS_FREE_RTOS_SUPPORTED
     TimerHandle_t timer;
