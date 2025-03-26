@@ -1,6 +1,6 @@
 {
   "name": "EncodeMe",
-  "version": "1.1.2",
+  "version": "1.1.4",
   "description": "Encoder library with builtin debouncer",
   "keywords": "encoder, rotary encoder, quadrature, debounce, input handling, input combination, embedded systems, Arduino, ESP32, STM32",
   "repository": {

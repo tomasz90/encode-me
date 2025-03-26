@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-#if defined(USE_LEGACY)
+#if defined(USE_LEGACY) || defined(ARDUINO_ARCH_AVR)
 #define LEGACY 1
 #else
 #define LEGACY 0
