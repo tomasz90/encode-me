@@ -1,6 +1,6 @@
 #include "Encoder.h"
 
-Pin::Pin(byte id, Mode mode) : id(id), mode(mode) {
+PinInput::PinInput(byte id, Mode mode) : Pin(id, mode) {
     invertedState = mode == IN_PULLUP;
     state.lastRawState = RELEASED;
     state.currentState = RELEASED;
@@ -8,17 +8,21 @@ Pin::Pin(byte id, Mode mode) : id(id), mode(mode) {
     state.lastChangeTime = 0;
 }
 
-Pin::Pin(byte id, byte lowOrHigh) : id(id), mode(OUT) {
-    state.currentState = lowOrHigh;
+PinOutput::PinOutput(byte id, bool lowOrHigh) : Pin(id, OUT) {
+    constantState = lowOrHigh;
 }
 
-void Pin::initialize() {
+void PinInput::initialize() {
     if (initialized) return;
     initialized = true;
     pinMode(id, mode);
-    if (mode == OUT) {
-        digitalWrite(id, state.currentState);
-    }
+}
+
+void PinOutput::initialize() {
+    if (initialized) return;
+    initialized = true;
+    pinMode(id, mode);
+    digitalWrite(id, constantState);
 }
 
 Encoder::Encoder(byte pinA, byte pinB)
@@ -34,8 +38,8 @@ Encoder::Encoder(byte pinA, byte pinB, Mode encoderMode)
 Encoder::Encoder(byte pinA, byte pinB, byte pinCommon, Mode encoderMode)
         : pinA(pinA, encoderMode),
           pinB(pinB, encoderMode) {
-    auto lowOrHigh = (encoderMode == INPUT_PULLUP) ? LOW : HIGH;
-    this->pinCommon = new Pin(pinCommon, lowOrHigh);
+    auto lowOrHigh = (encoderMode == IN_PULLUP) ? LOW : HIGH;
+    this->pinCommon = new PinOutput(pinCommon, lowOrHigh);
 }
 
 void Encoder::initialize() {

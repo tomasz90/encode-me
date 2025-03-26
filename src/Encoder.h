@@ -24,13 +24,18 @@ enum Mode {
 };
 
 struct Pin {
-    Pin(byte id, Mode mode);
-    Pin(byte id, byte lowOrHigh);
-
+    Pin(byte id, Mode mode) : id(id), mode(mode) {}
     byte id;
     Mode mode;
-    bool invertedState;
     bool initialized = false;
+
+    virtual void initialize();
+};
+
+struct PinInput : Pin {
+
+    PinInput(byte id, Mode mode);
+    bool invertedState;
 
     struct {
         bool lastRawState;
@@ -39,7 +44,15 @@ struct Pin {
         unsigned long lastChangeTime;
     } state;
 
-    void initialize();
+    void initialize() override;
+};
+
+struct PinOutput : Pin {
+
+    PinOutput(byte id, bool lowOrHigh);
+    bool constantState;
+
+    void initialize() override;
 };
 
 struct Encoder {
@@ -52,9 +65,9 @@ struct Encoder {
     // common ordinary pin
     Encoder(byte pinA, byte pinB, byte pinCommon, Mode encoderMode);
 
-    Pin pinA;
-    Pin pinB;
-    Pin *pinCommon = nullptr;
+    PinInput pinA;
+    PinInput pinB;
+    PinOutput *pinCommon = nullptr;
 
     volatile long position = 0;
     int accumulated = 0;

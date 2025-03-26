@@ -54,7 +54,7 @@ private:
     TimerHandle_t timer;
 #endif
     void pollEncoderState(Encoder *encoder) const;
-    void pollPinState(Pin *pin) const;
+    void pollPinState(PinInput *pin) const;
     void processEncoderState(Encoder *encoder) const;
     void resetState(Encoder *encoder) const;
 };

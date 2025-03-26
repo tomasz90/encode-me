@@ -48,7 +48,7 @@ void EncodersHandler::pollEncoderState(Encoder *encoder) const {
     pollPinState(&encoder->pinB);
 }
 
-void EncodersHandler::pollPinState(Pin *pin) const {
+void EncodersHandler::pollPinState(PinInput *pin) const {
     auto &s = pin->state;
     bool currentRawState = pin->invertedState == !digitalRead(pin->id);
     if (s.lastRawState != currentRawState) {
